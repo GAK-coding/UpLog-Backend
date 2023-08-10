@@ -273,35 +273,35 @@ public class MemberService {
         //TODO memberTeam 객체 지우고 Team 객체의 memberTeamList 가져와서 해당 되는 memberTeam객체 빼준 뒤에 업데이트 해줘야할듯
         JPAQueryFactory query=new JPAQueryFactory(entityManager);
         QMemberTeam memberTeam=QMemberTeam.memberTeam;
-        System.out.println("1");
+
 
         //QTeam team=QTeam.team;
         if(this.passwordEncoder.matches(deleteMemberRequest.getPassword(), member.getPassword())){
-            System.out.println("2");
+
             MemberTeam memberTeam1=query
                     .selectFrom(memberTeam)
                     .where(memberTeam.member.id.eq(id))
                     .fetchOne();
-            System.out.println("3");
+
 //            Team team1=query
 //                    .select(team)
 //                    .from(team)
 //                    .where(team.id.eq(memberTeam1.getTeam().getId()))
 //                    .fetchOne();
-            System.out.println("4");
+
             query.delete(memberTeam)
                     .where(memberTeam.member.id.eq(id))
                     .execute();
-            System.out.println("5");
+
             // 회원(Member)를 삭제
             memberRepository.delete(member);
-            System.out.println("6");
+
             //회원 탈퇴 후에도 토큰이 유효하기 때문에 jwt정보 제거 하고 로그아웃 처리해야 됨
             SecurityContextHolder.clearContext();
             TokenRequestDTO tokenRequestDTO=new TokenRequestDTO();
             tokenRequestDTO.addTokenToMemberInfoDTO(deleteMemberRequest.getAccessToken(),deleteMemberRequest.getRefreshToken());
             logout(tokenRequestDTO);
-            System.out.println("7");
+
             return "DELETE";
         }
         else{
