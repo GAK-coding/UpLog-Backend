@@ -116,11 +116,9 @@ public class TokenProvider implements InitializingBean {
     }
     public Long getExpiration(String token){
 
-        Long date=Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody().getExpiration().getTime();
-
-        return date;
-
-
+        Date date=Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody().getExpiration();
+        Long now = new Date().getTime();
+        return (date.getTime() - now);
 
     }
 

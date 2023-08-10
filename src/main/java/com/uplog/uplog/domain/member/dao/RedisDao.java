@@ -32,7 +32,7 @@ public class RedisDao {
     public String getValues(String key) {
         ValueOperations<String, String> values = redisTemplate.opsForValue();
 
-        return values.get(key);
+            return values.get(key);
     }
 
     public void deleteValues(String key) {

@@ -96,7 +96,7 @@ public class MemberController {
         return new ResponseEntity<>(memberInfoDTO,httpHeaders,HttpStatus.OK);
     }
 
-    @GetMapping("/members/logout")
+    @PostMapping("/members/logout")
     public String logoutPage(HttpServletRequest request, HttpServletResponse response,
                              @RequestBody @Validated TokenRequestDTO tokenRequestDTO) {
         System.out.println("logout1: "+SecurityContextHolder.getContext().getAuthentication()+" "+SecurityUtil.getCurrentUsername());

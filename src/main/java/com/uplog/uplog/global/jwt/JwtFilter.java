@@ -20,16 +20,19 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Optional;
 
 public class JwtFilter extends GenericFilterBean {
 
     private static final Logger logger = LoggerFactory.getLogger(JwtFilter.class);
     public static final String AUTHORIZATION_HEADER = "Authorization";
-    private RedisTemplate<String,String> redisTemplate;
+    private final RedisTemplate redisTemplate;
     private TokenProvider tokenProvider;
-    public JwtFilter(TokenProvider tokenProvider) {
+
+    public JwtFilter(TokenProvider tokenProvider,RedisTemplate redisTemplate) {
 
         this.tokenProvider = tokenProvider;
+        this.redisTemplate=redisTemplate;
 
     }
 
@@ -45,15 +48,16 @@ public class JwtFilter extends GenericFilterBean {
         if(!requestURI.equals("/members/refresh")){
             if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
 
-//                System.out.println(jwt);
-//                String isLogout = (String) redisTemplate.opsForValue().get(jwt);
-//
-//                if(ObjectUtils.isEmpty(isLogout)) {
+                System.out.println(jwt);
+                String isLogout = (String) redisTemplate.opsForValue().get(jwt);
+                //String isLogout=;
+
+                if(isLogout==null) {
                     Authentication authentication = tokenProvider.getAuthentication(jwt);
 
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                     logger.debug("Security Context에 '{}' 인증 정보를 저장했습니다, uri: {}", authentication.getName(), requestURI);
-              //  }
+                }
                 System.out.println("wewef1");
 
             } else {
