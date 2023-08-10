@@ -76,24 +76,24 @@ public class TokenProvider implements InitializingBean {
                 .setExpiration(validity)
                 .compact();
 
-       String refreshToken=Jwts.builder()
-               .setSubject(authentication.getName())
-               .setExpiration(new Date(System.currentTimeMillis()+ RefreshTokenValidityInMilliseconds))
-               .claim(AUTHORITIES_KEY, authorities)
-               .signWith(key, SignatureAlgorithm.HS512)
-               .compact();
+        String refreshToken=Jwts.builder()
+                .setSubject(authentication.getName())
+                .setExpiration(new Date(System.currentTimeMillis()+ RefreshTokenValidityInMilliseconds))
+                .claim(AUTHORITIES_KEY, authorities)
+                .signWith(key, SignatureAlgorithm.HS512)
+                .compact();
 
-       System.out.println("REfresh: "+refreshToken);
-       redisDao.setValues("RT:"+authentication.getName(),refreshToken,Duration.ofSeconds(seconds));
+        System.out.println("REfresh: "+refreshToken);
+        redisDao.setValues("RT:"+authentication.getName(),refreshToken,Duration.ofSeconds(seconds));
 
 
 
-       return TokenDTO.builder()
-               .grantType(BEARER_TYPE)
-               .accessToken(accessToken)
-               .accessTokenExpiresIn(validity.getTime())
-               .refreshToken(refreshToken)
-               .build();
+        return TokenDTO.builder()
+                .grantType(BEARER_TYPE)
+                .accessToken(accessToken)
+                .accessTokenExpiresIn(validity.getTime())
+                .refreshToken(refreshToken)
+                .build();
     }
 
     public Authentication getAuthentication(String token) {
@@ -109,9 +109,9 @@ public class TokenProvider implements InitializingBean {
                 Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
-        System.out.println("eget123 ");
+
         User principal = new User(claims.getSubject(), "", authorities);
-        System.out.println("12");
+
         return new UsernamePasswordAuthenticationToken(principal, token, authorities);
     }
     public Long getExpiration(String token){
@@ -119,6 +119,8 @@ public class TokenProvider implements InitializingBean {
         Date date=Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody().getExpiration();
         Long now = new Date().getTime();
         return (date.getTime() - now);
+
+
 
     }
 

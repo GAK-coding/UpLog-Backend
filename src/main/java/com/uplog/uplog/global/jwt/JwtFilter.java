@@ -48,9 +48,8 @@ public class JwtFilter extends GenericFilterBean {
         if(!requestURI.equals("/members/refresh")){
             if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
 
-                System.out.println(jwt);
+
                 String isLogout = (String) redisTemplate.opsForValue().get(jwt);
-                //String isLogout=;
 
                 if(isLogout==null) {
                     Authentication authentication = tokenProvider.getAuthentication(jwt);
@@ -58,15 +57,15 @@ public class JwtFilter extends GenericFilterBean {
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                     logger.debug("Security Context에 '{}' 인증 정보를 저장했습니다, uri: {}", authentication.getName(), requestURI);
                 }
-                System.out.println("wewef1");
+
 
             } else {
 
                 logger.debug("유효한 JWT 토큰이 없습니다, uri: {}", requestURI);
             }
         }
-        System.out.println("wewef2");
-    filterChain.doFilter(servletRequest, servletResponse);
+
+        filterChain.doFilter(servletRequest, servletResponse);
 
     }
 

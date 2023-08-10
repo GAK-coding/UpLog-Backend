@@ -139,6 +139,8 @@ public class MemberDTO {
     @NoArgsConstructor
     public static class DeleteMemberRequest{
         private String password;
+        private String accessToken;
+        private String refreshToken;
     }
 
     @Getter
