@@ -48,6 +48,19 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource(){
+        CorsConfiguration configuration=new CorsConfiguration();
+
+        configuration.addAllowedOriginPattern("*");
+        configuration.addAllowedHeader("*");
+        configuration.addAllowedMethod("*");
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source=new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**",configuration);
+        return source;
+    }
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer(){
@@ -60,7 +73,7 @@ public class SecurityConfig {
         //token 사용하는 방식이기 때문에 csrf을 disable
         http
                 .csrf().disable()
-                .cors(cors -> cors.disable());
+                //.cors(cors -> cors.disable());
         ;
 
         http
@@ -69,8 +82,9 @@ public class SecurityConfig {
                 .antMatchers("/api/v2/**","/health","/swagger-ui.html","/swagger/**",
                         "/swagger-resources/**","/webjars/**","/api-docs/**",
                         "/swagger-ui/**","/api/login").permitAll()
-                .anyRequest().authenticated();
-
+                .anyRequest().authenticated()
+                .and()
+                .cors();
         http
                 .exceptionHandling()
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint)
